@@ -10,8 +10,8 @@ DBAs never suggest use of triggers. We will understand how we can replace trigge
 
 **Temporal Tables**
 
-(1) System versioned Temporal Tables
-(2) Non versioned Temporal Tables
+1. System versioned Temporal Tables
+2. Non versioned Temporal Tables
 
 **System versioned Temporal Tables**: have two parts
 
