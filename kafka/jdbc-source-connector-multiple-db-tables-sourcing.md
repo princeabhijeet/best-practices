@@ -20,6 +20,7 @@ Technologies used:
 
     a.	ManagerTrackingDM - dbo.Customer
 
+    ```
     CREATE TABLE ManagerTrackingDM.dbo.Customer (
     CustomerID INT PRIMARY KEY IDENTITY(1,1),
     Tenant NVARCHAR(50),
@@ -30,9 +31,10 @@ Technologies used:
     CreatedDate DATETIME2 DEFAULT SYSDATETIME(),
     UpdatedDate DATETIME2 DEFAULT SYSDATETIME()
     );
+    ```
 
     b.	ReportSubscription - dbo.Customer
-
+    ```
     CREATE TABLE ReportSubscription.dbo.Customer (
     CustomerID INT PRIMARY KEY IDENTITY(1,1),
     Tenant NVARCHAR(50),
@@ -43,7 +45,7 @@ Technologies used:
     CreatedDate DATETIME2 DEFAULT SYSDATETIME(),
     UpdatedDate DATETIME2 DEFAULT SYSDATETIME()
     );
-
+```
 3.	Enable CDC on source tables:
 
     a.	[ManagerTrackingDM].[dbo].[Customer] = [ManagerTrackingDM].[cdc].[dbo_Customer_CT]
