@@ -3,9 +3,11 @@
 POC has been done in SQL Server (EFX-QA-SQLRP01).
 
 Technologies used:
+
 1.	SQL Server
    * SQL – Table, View
    * CDC (Change Data Capture) in SQL Server – CT Tables
+     
 2.	Kafka
    * Kafka Topic
    * JDBC Source Connector
