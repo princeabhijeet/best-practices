@@ -20,109 +20,118 @@ Technologies used:
 
     a.	ManagerTrackingDM - dbo.Customer
 
-    ```
-    CREATE TABLE ManagerTrackingDM.dbo.Customer (
-        CustomerID        INT             PRIMARY KEY  IDENTITY(1,1),
-        Tenant            NVARCHAR(50),
-        FirstName         NVARCHAR(50)     NOT NULL,
-        LastName          NVARCHAR(50)     NOT NULL,
-        Email             NVARCHAR(100)    UNIQUE      NOT NULL,
-        Phone             NVARCHAR(20),
-        CreatedDate       DATETIME2        DEFAULT     SYSDATETIME(),
-        UpdatedDate       DATETIME2        DEFAULT     SYSDATETIME()
-    );
-    ```
+	```
+	CREATE TABLE ManagerTrackingDM.dbo.Customer (
+	        CustomerID        INT             PRIMARY KEY  IDENTITY(1,1),
+	        Tenant            NVARCHAR(50),
+	        FirstName         NVARCHAR(50)     NOT NULL,
+	        LastName          NVARCHAR(50)     NOT NULL,
+	        Email             NVARCHAR(100)    UNIQUE      NOT NULL,
+	        Phone             NVARCHAR(20),
+	        CreatedDate       DATETIME2        DEFAULT     SYSDATETIME(),
+	        UpdatedDate       DATETIME2        DEFAULT     SYSDATETIME()
+	);
+	```
 
     b.	ReportSubscription - dbo.Customer
 
-    ```
-    CREATE TABLE ReportSubscription.dbo.Customer (
-        CustomerID        INT             PRIMARY KEY  IDENTITY(1,1),
-        Tenant            NVARCHAR(50),
-        FirstName         NVARCHAR(50)     NOT NULL,
-        LastName          NVARCHAR(50)     NOT NULL,
-        Email             NVARCHAR(100)    UNIQUE      NOT NULL,
-        Phone             NVARCHAR(20),
-        CreatedDate       DATETIME2        DEFAULT     SYSDATETIME(),
-        UpdatedDate       DATETIME2        DEFAULT     SYSDATETIME()
-    );
-    ```
+	```
+    	CREATE TABLE ReportSubscription.dbo.Customer (
+	        CustomerID        INT             PRIMARY KEY  IDENTITY(1,1),
+	        Tenant            NVARCHAR(50),
+	        FirstName         NVARCHAR(50)     NOT NULL,
+	        LastName          NVARCHAR(50)     NOT NULL,
+	        Email             NVARCHAR(100)    UNIQUE      NOT NULL,
+	        Phone             NVARCHAR(20),
+	        CreatedDate       DATETIME2        DEFAULT     SYSDATETIME(),
+	        UpdatedDate       DATETIME2        DEFAULT     SYSDATETIME()
+    	);
+	```
 
 3.	Enable CDC on source tables:
 
     a.	[ManagerTrackingDM].[dbo].[Customer] = [ManagerTrackingDM].[cdc].[dbo_Customer_CT]
 
-    ```
+	```
 	USE [ManagerTrackingDM];
-    GO
-
-    EXECUTE sp_cdc_enable_db
-    GO
-
-    IF OBJECT_ID('cdc.dbo_Customer_CT') IS NULL
-    	EXECUTE sys.sp_cdc_enable_table 
-    		@source_schema 		= N'dbo',
-    		@source_name 		= N'Customer',
-    		@role_name 		= N'MTcdcReader',
-    		@supports_net_changes 	= 1;
-    GO    
-    ```
+	GO
+	
+	EXECUTE sp_cdc_enable_db
+	GO
+	
+	IF OBJECT_ID('cdc.dbo_Customer_CT') IS NULL
+	EXECUTE sys.sp_cdc_enable_table 
+		@source_schema 		= N'dbo',
+		@source_name 		= N'Customer',
+		@role_name 		= N'MTcdcReader',
+		@supports_net_changes 	= 1;
+	GO 
+	```
 
     b.	[ReportSubscription].[dbo].[Customer] = [ReportSubscription].[cdc].[dbo_Customer_CT]
 
-    ```
-    USE [ReportSubscription];
-    GO
-    EXECUTE sp_cdc_enable_db
-    GO
-    IF OBJECT_ID('cdc.dbo_Customer_CT') IS NULL
-    EXECUTE sys.sp_cdc_enable_table
-    @source_schema = N'dbo',
-    @source_name = N'Customer',
-    @role_name = N'MTcdcReader',
-    @supports_net_changes = 1;
-    GO
-    ```
+	```
+	USE [ReportSubscription];
+	GO
+	
+	EXECUTE sp_cdc_enable_db
+	GO
+	
+	IF OBJECT_ID('cdc.dbo_Customer_CT') IS NULL
+	EXECUTE sys.sp_cdc_enable_table 
+		@source_schema 		= N'dbo',
+		@source_name 		= N'Customer',
+		@role_name 		= N'MTcdcReader',
+		@supports_net_changes 	= 1;
+	GO 
+	```
 
 4.	Create a database view to be executed by JDBC Source Connector:
 
     a.	[ManagerTrackingDM].[dbo].[vwMedHubCustomerRecord]
 
-    ```
-    USE [ManagerTrackingDM]
-    GO
-    SET ANSI_NULLS ON
-    GO
-    SET QUOTED_IDENTIFIER ON
-    GO
-    CREATE OR ALTER VIEW [dbo].[vwMedHubCustomerRecord] AS
-    SELECT
-    CustRecord.CustomerId, 
-    CustRecord.Tenant,
-    CustRecord.FirstName,
-    CustRecord.LastName,
-    CustRecord.Email,
-    CustRecord.Phone,
-    CustRecord.CreatedDate,
-    CustRecord.UpdatedDate,
-    CAST(CustRecord.ChangeDate AS DateTime2) AS ChangeTime
-    FROM
-    (
-    SELECT MgrCust.*, CAST(COALESCE(CLTM.tran_end_time, Getdate()) as datetime2) AS ChangeDate
-    FROM ManagerTrackingDM.cdc.dbo_Customer_CT AS MgrCust WITH (NOLOCK)
-    INNER JOIN
-    ManagerTrackingDM.cdc.lsn_time_mapping AS CLTM WITH (NOLOCK)
-    ON MgrCust.__$start_lsn = CLTM.start_lsn
-    WHERE (MgrCust.__$operation = 4 OR MgrCust.__$operation = 2)
-    UNION ALL
-    SELECT RptCust.*, CAST(COALESCE(CLTM.tran_end_time, Getdate()) as datetime2) AS ChangeDate
-    FROM ReportSubscription.cdc.dbo_Customer_CT AS RptCust WITH (NOLOCK)
-    INNER JOIN
-    ReportSubscription.cdc.lsn_time_mapping AS CLTM WITH (NOLOCK)
-    ON RptCust.__$start_lsn = CLTM.start_lsn
-    WHERE (RptCust.__$operation = 4 OR RptCust.__$operation = 2)
-    ) AS CustRecord
-    ```
+	```
+	USE [ManagerTrackingDM]
+	GO
+	
+	SET ANSI_NULLS ON
+	GO
+	
+	SET QUOTED_IDENTIFIER ON
+	GO
+	
+	CREATE OR ALTER VIEW [dbo].[vwMedHubCustomerRecord]
+	AS
+	SELECT CustRecord.CustomerId,
+	CustRecord.Tenant,
+	CustRecord.FirstName,
+	CustRecord.LastName,
+	CustRecord.Email,
+	CustRecord.Phone,
+	CustRecord.CreatedDate,
+	CustRecord.UpdatedDate,
+	CAST(CustRecord.ChangeDate AS DATETIME2) AS ChangeTime
+
+	FROM
+	(
+		SELECT MgrCust.*,
+			CAST(COALESCE(CLTM.tran_end_time, Getdate()) AS DATETIME2) AS ChangeDate
+			FROM ManagerTrackingDM.cdc.dbo_Customer_CT AS MgrCust WITH (NOLOCK)
+				INNER JOIN ManagerTrackingDM.cdc.lsn_time_mapping AS CLTM WITH (NOLOCK) 
+				ON MgrCust.__$start_lsn = CLTM.start_lsn
+			WHERE (MgrCust.__$operation = 4 OR MgrCust.__$operation = 2)
+		
+		UNION ALL
+		
+		SELECT RptCust.*,
+			CAST(COALESCE(CLTM.tran_end_time, Getdate()) AS DATETIME2) AS ChangeDate
+			FROM ReportSubscription.cdc.dbo_Customer_CT AS RptCust WITH (NOLOCK)
+				INNER JOIN ReportSubscription.cdc.lsn_time_mapping AS CLTM WITH (NOLOCK) 
+				ON RptCust.__$start_lsn = CLTM.start_lsn
+			WHERE (RptCust.__$operation = 4 OR RptCust.__$operation = 2)
+	) 
+	AS CustRecord
+	```
 
 5.	Create a topic in which source connector will publish message:
 
