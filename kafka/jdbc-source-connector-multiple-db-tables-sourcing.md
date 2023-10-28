@@ -4,12 +4,12 @@ POC has been done in SQL Server (EFX-QA-SQLRP01).
 
 Technologies used:
 1.	SQL Server
-   1. SQL – Table, View
-   2. CDC (Change Data Capture) in SQL Server – CT Tables
+   * SQL – Table, View
+   * CDC (Change Data Capture) in SQL Server – CT Tables
 2.	Kafka
-   1. Kafka Topic
-   2. JDBC Source Connector
-   3. JDBC Sink Connector
+   * Kafka Topic
+   * JDBC Source Connector
+   * JDBC Sink Connector
 
 **POC**: Build a data flow pipeline where data should flow from tables of same schema present in multiple databases within same database server by getting sourced from a JDBC Source Connector to a single Kafka topic - which can later by sink-ed to a sink table by using JDBC Sink Connector.
 
