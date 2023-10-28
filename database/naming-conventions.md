@@ -1,5 +1,5 @@
 
-DB Objects Naming Conventions
+Database Objects Naming Conventions
 
 | Object | Convention    | Example    |
 | :---:   | :---: | :---: |
