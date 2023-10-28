@@ -22,14 +22,14 @@ Technologies used:
 
     ```
     CREATE TABLE ManagerTrackingDM.dbo.Customer (
-    CustomerID INT PRIMARY KEY IDENTITY(1,1),
-    Tenant NVARCHAR(50),
-    FirstName NVARCHAR(50) NOT NULL,
-    LastName NVARCHAR(50) NOT NULL,
-    Email NVARCHAR(100) UNIQUE NOT NULL,
-    Phone NVARCHAR(20),
-    CreatedDate DATETIME2 DEFAULT SYSDATETIME(),
-    UpdatedDate DATETIME2 DEFAULT SYSDATETIME()
+        CustomerID        INT             PRIMARY KEY  IDENTITY(1,1),
+        Tenant            NVARCHAR(50),
+        FirstName         NVARCHAR(50)     NOT NULL,
+        LastName          NVARCHAR(50)     NOT NULL,
+        Email             NVARCHAR(100)    UNIQUE      NOT NULL,
+        Phone             NVARCHAR(20),
+        CreatedDate       DATETIME2        DEFAULT     SYSDATETIME(),
+        UpdatedDate       DATETIME2        DEFAULT     SYSDATETIME()
     );
     ```
 
@@ -37,14 +37,14 @@ Technologies used:
 
     ```
     CREATE TABLE ReportSubscription.dbo.Customer (
-    CustomerID INT PRIMARY KEY IDENTITY(1,1),
-    Tenant NVARCHAR(50),
-    FirstName NVARCHAR(50) NOT NULL,
-    LastName NVARCHAR(50) NOT NULL,
-    Email NVARCHAR(100) UNIQUE NOT NULL,
-    Phone NVARCHAR(20),
-    CreatedDate DATETIME2 DEFAULT SYSDATETIME(),
-    UpdatedDate DATETIME2 DEFAULT SYSDATETIME()
+        CustomerID        INT             PRIMARY KEY  IDENTITY(1,1),
+        Tenant            NVARCHAR(50),
+        FirstName         NVARCHAR(50)     NOT NULL,
+        LastName          NVARCHAR(50)     NOT NULL,
+        Email             NVARCHAR(100)    UNIQUE      NOT NULL,
+        Phone             NVARCHAR(20),
+        CreatedDate       DATETIME2        DEFAULT     SYSDATETIME(),
+        UpdatedDate       DATETIME2        DEFAULT     SYSDATETIME()
     );
     ```
 
@@ -55,14 +55,16 @@ Technologies used:
     ```
     USE [ManagerTrackingDM];
     GO
+
     EXECUTE sp_cdc_enable_db
     GO
+
     IF OBJECT_ID('cdc.dbo_Customer_CT') IS NULL
-    EXECUTE sys.sp_cdc_enable_table
-    @source_schema = N'dbo',
-    @source_name = N'Customer',
-    @role_name = N'MTcdcReader',
-    @supports_net_changes = 1;
+    	EXECUTE sys.sp_cdc_enable_table 
+    		@source_schema 			= N'dbo',
+    		@source_name 			= N'Customer',
+    		@role_name 				= N'MTcdcReader',
+    		@supports_net_changes 	= 1;
     GO
     ```
 
@@ -209,7 +211,7 @@ Technologies used:
     UPDATE ReportSubscription.dbo.Customer SET FirstName='Jan' WHERE CustomerId=1
     ```
 
-10.	Verify @ http://10.200.128.181:8080/clusters/qa_kafka/topics/med.reporting.customer if topic offsets are increasing after each insert or update as per previous step.
+10.	Verify if topic offsets are increasing after each insert or update as per previous step.
 
 
 Dependency:
