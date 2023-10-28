@@ -180,8 +180,8 @@ Technologies used:
     a.	MED-Reporting-Customer-Sink-incr
 
 	```
-    	{
- 		"name": "MED-Reporting-Customer-Sink-incr",
+	{
+		"name": "MED-Reporting-Customer-Sink-incr",
 		"config": {
 			"connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
 			"table.name.format": "CustomerSink",
@@ -196,7 +196,7 @@ Technologies used:
 			"pk.mode": "record_value",
 			"pk.fields": "CustomerId,Tenant"
 		}
-	}
+	}    	
 	```
 
 9.	Test POC:
