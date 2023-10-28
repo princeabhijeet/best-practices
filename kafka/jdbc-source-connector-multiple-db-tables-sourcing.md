@@ -53,7 +53,7 @@ Technologies used:
     a.	[ManagerTrackingDM].[dbo].[Customer] = [ManagerTrackingDM].[cdc].[dbo_Customer_CT]
 
     ```
-    USE [ManagerTrackingDM];
+	USE [ManagerTrackingDM];
     GO
 
     EXECUTE sp_cdc_enable_db
@@ -65,7 +65,7 @@ Technologies used:
     		@source_name 			= N'Customer',
     		@role_name 				= N'MTcdcReader',
     		@supports_net_changes 	= 1;
-    GO
+    GO    
     ```
 
     b.	[ReportSubscription].[dbo].[Customer] = [ReportSubscription].[cdc].[dbo_Customer_CT]
