@@ -34,6 +34,7 @@ Technologies used:
     ```
 
     b.	ReportSubscription - dbo.Customer
+
     ```
     CREATE TABLE ReportSubscription.dbo.Customer (
     CustomerID INT PRIMARY KEY IDENTITY(1,1),
@@ -45,11 +46,13 @@ Technologies used:
     CreatedDate DATETIME2 DEFAULT SYSDATETIME(),
     UpdatedDate DATETIME2 DEFAULT SYSDATETIME()
     );
-```
+    ```
+
 3.	Enable CDC on source tables:
 
     a.	[ManagerTrackingDM].[dbo].[Customer] = [ManagerTrackingDM].[cdc].[dbo_Customer_CT]
 
+    ```
     USE [ManagerTrackingDM];
     GO
     EXECUTE sp_cdc_enable_db
@@ -61,9 +64,11 @@ Technologies used:
     @role_name = N'MTcdcReader',
     @supports_net_changes = 1;
     GO
+    ```
 
     b.	[ReportSubscription].[dbo].[Customer] = [ReportSubscription].[cdc].[dbo_Customer_CT]
 
+    ```
     USE [ReportSubscription];
     GO
     EXECUTE sp_cdc_enable_db
@@ -75,11 +80,13 @@ Technologies used:
     @role_name = N'MTcdcReader',
     @supports_net_changes = 1;
     GO
+    ```
 
 4.	Create a database view to be executed by JDBC Source Connector:
 
     a.	[ManagerTrackingDM].[dbo].[vwMedHubCustomerRecord]
 
+    ```
     USE [ManagerTrackingDM]
     GO
     SET ANSI_NULLS ON
@@ -113,6 +120,7 @@ Technologies used:
     ON RptCust.__$start_lsn = CLTM.start_lsn
     WHERE (RptCust.__$operation = 4 OR RptCust.__$operation = 2)
     ) AS CustRecord
+    ```
 
 5.	Create a topic in which source connector will publish message:
 
@@ -122,6 +130,7 @@ Technologies used:
 
     a.	MED-Reporting-Customer-Source-incr
 
+    ```
     {
               "name": "MED-Reporting-Customer-Source-incr",
               "config": {
@@ -137,11 +146,12 @@ Technologies used:
                              "query": "Select * from [ManagerTrackingDM].[dbo].[vwMedHubCustomerRecord]"
               }
     }
-
+    ```
 7.	Create a sink table in any one of the databases which will sink data from topic (med.reporting.customer)
 
     a.	[ManagerTrackingDM].[dbo].[CustomerSink]
 
+    ```
     CREATE TABLE ManagerTrackingDM.dbo.CustomerSink (
     ID INT PRIMARY KEY IDENTITY(1,1),
     CustomerId INT,
@@ -153,11 +163,13 @@ Technologies used:
     CreatedDate DATETIME2 DEFAULT SYSDATETIME(),
     UpdatedDate DATETIME2 DEFAULT SYSDATETIME()
     );
+    ```
 
 8.	Create a JDBC Sink Connector which will read data from topic (med.reporting.customer) and sink into [ManagerTrackingDM].[dbo].[CustomerSink]
 
     a.	MED-Reporting-Customer-Sink-incr
 
+    ```
     {
               "name": "MED-Reporting-Customer-Sink-incr",
               "config": {
@@ -175,21 +187,27 @@ Technologies used:
                              "pk.fields": "CustomerId,Tenant"
               }
     }
+    ```
 
 9.	Test POC:
 
     a.	INSERT few dummy rows in [ManagerTrackingDM].[dbo].[Customer] and [ReportSubscription].[dbo].[Customer] and verify sink connector should get new records in [ManagerTrackingDM].[dbo].[CustomerSink]
 
+    ```
     INSERT INTO ManagerTrackingDM.dbo.Customer (Tenant, FirstName, LastName, Email, Phone) 
     VALUES ('T1', 'Prince', 'A', 'Prince.A@email.com', '123-456-7890');
+    
 
     INSERT INTO ReportSubscription.dbo.Customer (Tenant, FirstName, LastName, Email, Phone) 
     VALUES ('T2', 'Joy', 'Toy', 'Joy.Toy@email.com', '900-123-4544');
+    ```
 
     b.	Update a record in [ManagerTrackingDM].[dbo].[Customer] and [ReportSubscription].[dbo].[Customer] and verify sink connector should update existing records in [ManagerTrackingDM].[dbo].[CustomerSink]
 
+    ```
     UPDATE ManagerTrackingDM.dbo.Customer SET FirstName='Joe' WHERE CustomerId=1        
     UPDATE ReportSubscription.dbo.Customer SET FirstName='Jan' WHERE CustomerId=1
+    ```
 
 10.	Verify @ http://10.200.128.181:8080/clusters/qa_kafka/topics/med.reporting.customer if topic offsets are increasing after each insert or update as per previous step.
 
