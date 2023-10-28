@@ -35,16 +35,16 @@ DBAs never suggest use of triggers. We will understand how we can replace trigge
 
 **Creating Non-versioned Temporal Table**:
 
-    CREATE TABLE ManagerTrackingDM.dbo.Customer (
-		CustomerID INT PRIMARY KEY IDENTITY(1,1),
-		FirstName NVARCHAR(50) NOT NULL,
-		LastName NVARCHAR(50) NOT NULL,
-		Email NVARCHAR(100) UNIQUE NOT NULL,
-		Phone NVARCHAR(20),
-		CreatedDate DATETIME2 DEFAULT (SYSUTCDATETIME()) NOT NULL,
-		UpdatedDate DATETIME2 **GENERATED ALWAYS** AS **ROW START** NOT NULL,
-		**ValidUntil**  DATETIME2 **GENERATED ALWAYS** AS **ROW END** NOT NULL,
-		**PERIOD FOR SYSTEM_TIME** (**UpdatedDate**, ValidUntil)
+	CREATE TABLE ADB.dbo.Customer (
+		CustomerID	INT 		PRIMARY KEY 	IDENTITY(1, 1),
+		FirstName	NVARCHAR(50) 	NOT NULL,
+		LastName	NVARCHAR(50) 	NOT NULL,
+		Email		NVARCHAR(100) 	UNIQUE	NOT NULL,
+		Phone		NVARCHAR(20),
+		CreatedDate	DATETIME2 	DEFAULT(SYSUTCDATETIME()) 	NOT NULL,
+		UpdatedDate	DATETIME2 	GENERATED ALWAYS 	AS 	ROW START 	NOT NULL,
+		ValidUntil	DATETIME2 	GENERATED ALWAYS 	AS 	ROW END 	NOT NULL,
+		PERIOD		FOR 		SYSTEM_TIME(UpdatedDate, ValidUntil)
 	);
 
 
