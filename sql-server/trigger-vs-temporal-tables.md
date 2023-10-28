@@ -30,7 +30,7 @@ DBAs never suggest use of triggers. We will understand how we can replace trigge
 **Non versioned Temporal Tables**: have one part (current state) with history off
 
 1. Current state of table
-		- we don't write WITH (SYSTEM_VERSIONING=ON) - so that history tables are not created
+		- we don't write: WITH (SYSTEM_VERSIONING=ON) - so that history tables are not created
 		
 
 **Creating Non-versioned Temporal Table**:
