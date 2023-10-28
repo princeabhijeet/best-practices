@@ -61,9 +61,9 @@ Technologies used:
 
     IF OBJECT_ID('cdc.dbo_Customer_CT') IS NULL
     	EXECUTE sys.sp_cdc_enable_table 
-    		@source_schema 			= N'dbo',
-    		@source_name 			= N'Customer',
-    		@role_name 				= N'MTcdcReader',
+    		@source_schema 		= N'dbo',
+    		@source_name 		= N'Customer',
+    		@role_name 		= N'MTcdcReader',
     		@supports_net_changes 	= 1;
     GO    
     ```
