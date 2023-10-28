@@ -9,16 +9,19 @@ DBAs never suggest use of triggers. We will understand how we can replace trigge
    * Internal working: When a trigger is created, trigger information, its associated event, and its linked table - all these metadata is stored in SQL Server's internal system tables & views like sys.triggers, sys.trigger_events, sys.trigger_event_types, sys.tables. When a trigger event occurs, SQL Server references these system tables & views to identify & execute the appropriate triggers. Usages of these extra system tables & views adds complexity and performance issues while using triggers.
 
 **Temporal Tables**
+
 (1) System versioned Temporal Tables
 (2) Non versioned Temporal Tables
 
 **System versioned Temporal Tables**: have two parts
+
 (1) Current state of table
 (2) History table
 		- WITH (SYSTEM_VERSIONING=ON)
 		- extra table to manage history state or previous versions of data (this history table makes temporal tables - a "system versioned" table)
 
 **Non versioned Temporal Tables**: have one part (current state) with history off
+
 (1) Current state of table
 		- we don't write WITH (SYSTEM_VERSIONING=ON) - so that history tables are not created
 		
