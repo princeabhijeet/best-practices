@@ -3,15 +3,18 @@
 There are multiple ways by which we can update timestamp columns in a table.
 DBAs never suggest use of triggers. We will understand how we can replace triggers with non-versioned temporal tables.
 
+
 **Triggers**
    * Triggers re special stored procedure that automatically runs when an event occurs in the database server.
    * Triggers are executed within the transaction scope.
    * Internal working: When a trigger is created, trigger information, its associated event, and its linked table - all these metadata is stored in SQL Server's internal system tables & views like sys.triggers, sys.trigger_events, sys.trigger_event_types, sys.tables. When a trigger event occurs, SQL Server references these system tables & views to identify & execute the appropriate triggers. Usages of these extra system tables & views adds complexity and performance issues while using triggers.
 
+
 **Temporal Tables**
 
 1. System versioned Temporal Tables
 2. Non versioned Temporal Tables
+
 
 **System versioned Temporal Tables**: have two parts
 
@@ -19,6 +22,8 @@ DBAs never suggest use of triggers. We will understand how we can replace trigge
 (2) History table
 		- WITH (SYSTEM_VERSIONING=ON)
 		- extra table to manage history state or previous versions of data (this history table makes temporal tables - a "system versioned" table)
+
+
 
 **Non versioned Temporal Tables**: have one part (current state) with history off
 
@@ -40,6 +45,7 @@ CREATE TABLE dbo.Customer (
 		**ValidUntil**  DATETIME2 **GENERATED ALWAYS** AS **ROW END** NOT NULL,
 		**PERIOD FOR SYSTEM_TIME** (**UpdatedDate**, ValidUntil)
 	);
+
 
 (1) Objective: UpdatedDate column should be updated automaticall on every insert/update of a row of customer table.
 (2) Above CREATE statement creates a Non-versioned Temporal Table as we have not included "WITH (SYSTEM_VERSIONING=ON)" due to which history table is not created.
