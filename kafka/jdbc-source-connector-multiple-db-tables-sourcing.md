@@ -181,7 +181,7 @@ Technologies used:
 
 	```
     	{
-		"name": "MED-Reporting-Customer-Sink-incr",
+ 		"name": "MED-Reporting-Customer-Sink-incr",
 		"config": {
 			"connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
 			"table.name.format": "CustomerSink",
@@ -215,7 +215,8 @@ Technologies used:
     b.	Update a record in [ManagerTrackingDM].[dbo].[Customer] and [ReportSubscription].[dbo].[Customer] and verify sink connector should update existing records in [ManagerTrackingDM].[dbo].[CustomerSink]
 
 	```
-    	UPDATE ManagerTrackingDM.dbo.Customer SET FirstName='Joe' WHERE CustomerId=1        
+    	UPDATE ManagerTrackingDM.dbo.Customer SET FirstName='Joe' WHERE CustomerId=1     
+   
     	UPDATE ReportSubscription.dbo.Customer SET FirstName='Jan' WHERE CustomerId=1
 	```
 
