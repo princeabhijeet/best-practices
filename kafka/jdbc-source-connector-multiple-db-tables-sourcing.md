@@ -135,7 +135,7 @@ Technologies used:
 
 5.	Create a topic in which source connector will publish message:
 
-    a.	med.reporting.customer (http://10.200.128.181:8080/clusters/qa_kafka/topics/med.reporting.customer)
+    a.	med.reporting.customer
 
 6.	Create JDBC Source Connector & refer the view [ManagerTrackingDM].[dbo].[vwMedHubCustomerRecord]:
 
