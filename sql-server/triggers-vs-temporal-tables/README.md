@@ -35,7 +35,6 @@ DBAs never suggest use of triggers. We will understand how we can replace trigge
 
 **Creating Non-versioned Temporal Table**:
 
-CREATE TABLE dbo.Customer (
     CREATE TABLE ManagerTrackingDM.dbo.Customer (
 		CustomerID INT PRIMARY KEY IDENTITY(1,1),
 		FirstName NVARCHAR(50) NOT NULL,
