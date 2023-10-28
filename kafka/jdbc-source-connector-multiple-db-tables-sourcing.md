@@ -15,6 +15,7 @@ POC: Build a data flow pipeline where data should flow from tables of same schem
 
 1.	Given: Consider single SQL Server: EFX-QA-SQLRP01
 2.	Two databases with same table (same schema) - acting as source tables:
+
     a.	ManagerTrackingDM - dbo.Customer
 
     CREATE TABLE ManagerTrackingDM.dbo.Customer (
@@ -42,6 +43,7 @@ POC: Build a data flow pipeline where data should flow from tables of same schem
     );
 
 3.	Enable CDC on source tables:
+
     a.	[ManagerTrackingDM].[dbo].[Customer] = [ManagerTrackingDM].[cdc].[dbo_Customer_CT]
 
     USE [ManagerTrackingDM];
@@ -71,6 +73,7 @@ POC: Build a data flow pipeline where data should flow from tables of same schem
     GO
 
 4.	Create a database view to be executed by JDBC Source Connector:
+
     a.	[ManagerTrackingDM].[dbo].[vwMedHubCustomerRecord]
 
     USE [ManagerTrackingDM]
@@ -108,9 +111,11 @@ POC: Build a data flow pipeline where data should flow from tables of same schem
     ) AS CustRecord
 
 5.	Create a topic in which source connector will publish message:
+
     a.	med.reporting.customer (http://10.200.128.181:8080/clusters/qa_kafka/topics/med.reporting.customer)
 
 6.	Create JDBC Source Connector & refer the view [ManagerTrackingDM].[dbo].[vwMedHubCustomerRecord]:
+
     a.	MED-Reporting-Customer-Source-incr
 
     {
@@ -130,6 +135,7 @@ POC: Build a data flow pipeline where data should flow from tables of same schem
     }
 
 7.	Create a sink table in any one of the databases which will sink data from topic (med.reporting.customer)
+
     a.	[ManagerTrackingDM].[dbo].[CustomerSink]
 
     CREATE TABLE ManagerTrackingDM.dbo.CustomerSink (
@@ -145,6 +151,7 @@ POC: Build a data flow pipeline where data should flow from tables of same schem
     );
 
 8.	Create a JDBC Sink Connector which will read data from topic (med.reporting.customer) and sink into [ManagerTrackingDM].[dbo].[CustomerSink]
+
     a.	MED-Reporting-Customer-Sink-incr
 
     {
@@ -166,6 +173,7 @@ POC: Build a data flow pipeline where data should flow from tables of same schem
     }
 
 9.	Test POC:
+
     a.	INSERT few dummy rows in [ManagerTrackingDM].[dbo].[Customer] and [ReportSubscription].[dbo].[Customer] and verify sink connector should get new records in [ManagerTrackingDM].[dbo].[CustomerSink]
 
     INSERT INTO ManagerTrackingDM.dbo.Customer (Tenant, FirstName, LastName, Email, Phone) 
