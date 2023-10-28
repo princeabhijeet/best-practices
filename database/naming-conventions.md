@@ -12,3 +12,4 @@ DB Objects Naming Conventions
 | Default Constraint | DF_TableName_FieldName   | DF_DimCustomer_CreatedDate, DF_DimCustomer_UpdatedDate   |
 | Clustered Index | IXC_TableName_FieldNames   | IXC_DimCustomer_CustomerId_Record_Id   |
 | Non Clustered Index | IXNC_TableName_FieldNames   | IXNC_DimCustomer_CustomerId_Record_Id   |
+| * | *   | *   |
