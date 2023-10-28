@@ -5,8 +5,7 @@ DB Objects Naming Conventions
 | :---:   | :---: | :---: |
 | Table | Nouns   | DimCustomer, FactTestAttempt   |
 | View | vw   | vwMedCustomerRecord   |
-| Function | fn_ / udf_ / ufn_   | fn_FormatData, udf_GetTestScore, 
-ufn_BuildPlan   |
+| Function | fn_ / udf_ / ufn_   | fn_FormatData, udf_GetTestScore, ufn_BuildPlan   |
 | Stored Procedure | usp_   | usp_GetTestScore   |
 | Primary Key | PK_TableName_FieldName   | PK_DimCustomer_CustomerId   |
 | Foreign Key | FK_ReferencingTable_ReferencedTable_ReferencingColumn_ReferencedColumn   | FK_DimCustomer_DimTestScore_CustomerId_Cid   |
