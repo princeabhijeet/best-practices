@@ -4,7 +4,6 @@ POC has been done in SQL Server (EFX-QA-SQLRP01).
 
 Technologies used:
 1.	SQL Server
-
   a.	SQL – Table, View
   b.	CDC (Change Data Capture) in SQL Server – CT Tables
 
