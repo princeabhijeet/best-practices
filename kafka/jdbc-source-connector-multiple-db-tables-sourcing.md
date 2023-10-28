@@ -181,20 +181,20 @@ Technologies used:
 
 	```
     	{
-	"name": "MED-Reporting-Customer-Sink-incr",
-	"config": {
-		"connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
-		"table.name.format": "CustomerSink",
-		"fields.whitelist": "CustomerId,Tenant,FirstName,LastName,Email,Phone",
-		"connection.password": "${azurekv:aks-ana-efx-nonprodkv:kafkaconnect-jdbc-password}",
-		"tasks.max": "1",
-		"topics": "med.reporting.customer",
-		"connection.user": "${azurekv:aks-ana-efx-nonprodkv:kafkaconnect-jdbc-user}",
 		"name": "MED-Reporting-Customer-Sink-incr",
-		"connection.url": "jdbc:sqlserver://EFX-QA-SQLRP01:1433;databaseName=ManagerTrackingDM",
-		"insert.mode": "upsert",
-		"pk.mode": "record_value",
-		"pk.fields": "CustomerId,Tenant"
+		"config": {
+			"connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
+			"table.name.format": "CustomerSink",
+			"fields.whitelist": "CustomerId,Tenant,FirstName,LastName,Email,Phone",
+			"connection.password": "${azurekv:aks-ana-efx-nonprodkv:kafkaconnect-jdbc-password}",
+			"tasks.max": "1",
+			"topics": "med.reporting.customer",
+			"connection.user": "${azurekv:aks-ana-efx-nonprodkv:kafkaconnect-jdbc-user}",
+			"name": "MED-Reporting-Customer-Sink-incr",
+			"connection.url": "jdbc:sqlserver://EFX-QA-SQLRP01:1433;databaseName=ManagerTrackingDM",
+			"insert.mode": "upsert",
+			"pk.mode": "record_value",
+			"pk.fields": "CustomerId,Tenant"
 		}
 	}
 	```
