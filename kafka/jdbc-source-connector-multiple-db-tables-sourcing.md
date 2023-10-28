@@ -22,7 +22,7 @@ Technologies used:
 
 	```
 	CREATE TABLE ManagerTrackingDM.dbo.Customer (
-	        CustomerID        INT             PRIMARY KEY  IDENTITY(1,1),
+	        CustomerID        INT              PRIMARY KEY  IDENTITY(1,1),
 	        Tenant            NVARCHAR(50),
 	        FirstName         NVARCHAR(50)     NOT NULL,
 	        LastName          NVARCHAR(50)     NOT NULL,
@@ -37,7 +37,7 @@ Technologies used:
 
 	```
     	CREATE TABLE ReportSubscription.dbo.Customer (
-	        CustomerID        INT             PRIMARY KEY  IDENTITY(1,1),
+	        CustomerID        INT              PRIMARY KEY  IDENTITY(1,1),
 	        Tenant            NVARCHAR(50),
 	        FirstName         NVARCHAR(50)     NOT NULL,
 	        LastName          NVARCHAR(50)     NOT NULL,
@@ -141,84 +141,83 @@ Technologies used:
 
     a.	MED-Reporting-Customer-Source-incr
 
-    ```
-    {
-              "name": "MED-Reporting-Customer-Source-incr",
-              "config": {
-                             "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
-                             "name": "MED-Reporting-Customer-Source-incr",
-                             "mode": "timestamp",
-                             "timestamp.column.name": "ChangeTime",
-                             "topic.prefix": "med.reporting.customer",
-                             "tasks.max": "1",
-                             "connection.user": "${azurekv:aks-ana-efx-nonprodkv:kafkaconnect-jdbc-user}",
-                             "connection.password": "${azurekv:aks-ana-efx-nonprodkv:kafkaconnect-jdbc-password}",
-                             "connection.url": "jdbc:sqlserver://EFX-QA-SQLRP01:1433;databaseName=ManagerTrackingDM",
-                             "query": "Select * from [ManagerTrackingDM].[dbo].[vwMedHubCustomerRecord]"
-              }
-    }
-    ```
+	```
+	{
+		"name": "MED-Reporting-Customer-Source-incr",
+		"config": {
+			"connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
+			"name": "MED-Reporting-Customer-Source-incr",
+			"mode": "timestamp",
+			"timestamp.column.name": "ChangeTime",
+			"topic.prefix": "med.reporting.customer",
+			"tasks.max": "1",
+			"connection.user": "${azurekv:aks-ana-efx-nonprodkv:kafkaconnect-jdbc-user}",
+			"connection.password": "${azurekv:aks-ana-efx-nonprodkv:kafkaconnect-jdbc-password}",
+			"connection.url": "jdbc:sqlserver://EFX-QA-SQLRP01:1433;databaseName=ManagerTrackingDM",
+			"query": "Select * from [ManagerTrackingDM].[dbo].[vwMedHubCustomerRecord]"
+		}
+	}
+	```
 7.	Create a sink table in any one of the databases which will sink data from topic (med.reporting.customer)
 
     a.	[ManagerTrackingDM].[dbo].[CustomerSink]
 
-    ```
-    CREATE TABLE ManagerTrackingDM.dbo.CustomerSink (
-    ID INT PRIMARY KEY IDENTITY(1,1),
-    CustomerId INT,
-    Tenant NVARCHAR(50),
-    FirstName NVARCHAR(50) NOT NULL,
-    LastName NVARCHAR(50) NOT NULL,
-    Email NVARCHAR(100) UNIQUE NOT NULL,
-    Phone NVARCHAR(20),
-    CreatedDate DATETIME2 DEFAULT SYSDATETIME(),
-    UpdatedDate DATETIME2 DEFAULT SYSDATETIME()
-    );
-    ```
+	```
+	CREATE TABLE ManagerTrackingDM.dbo.CustomerSink (
+	        CustomerID        INT              PRIMARY KEY  IDENTITY(1,1),
+	        Tenant            NVARCHAR(50),
+	        FirstName         NVARCHAR(50)     NOT NULL,
+	        LastName          NVARCHAR(50)     NOT NULL,
+	        Email             NVARCHAR(100)    UNIQUE      NOT NULL,
+	        Phone             NVARCHAR(20),
+	        CreatedDate       DATETIME2        DEFAULT     SYSDATETIME(),
+	        UpdatedDate       DATETIME2        DEFAULT     SYSDATETIME()
+	);
+	```
 
 8.	Create a JDBC Sink Connector which will read data from topic (med.reporting.customer) and sink into [ManagerTrackingDM].[dbo].[CustomerSink]
 
     a.	MED-Reporting-Customer-Sink-incr
 
-    ```
-    {
-              "name": "MED-Reporting-Customer-Sink-incr",
-              "config": {
-                             "connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
-                             "table.name.format": "CustomerSink",
-                             "fields.whitelist": "CustomerId,Tenant,FirstName,LastName,Email,Phone",
-                             "connection.password": "${azurekv:aks-ana-efx-nonprodkv:kafkaconnect-jdbc-password}",
-                             "tasks.max": "1",
-                             "topics": "med.reporting.customer",
-                             "connection.user": "${azurekv:aks-ana-efx-nonprodkv:kafkaconnect-jdbc-user}",
-                             "name": "MED-Reporting-Customer-Sink-incr",
-                             "connection.url": "jdbc:sqlserver://EFX-QA-SQLRP01:1433;databaseName=ManagerTrackingDM",
-                             "insert.mode": "upsert",
-                             "pk.mode": "record_value",
-                             "pk.fields": "CustomerId,Tenant"
-              }
-    }
-    ```
+	```
+    	{
+	"name": "MED-Reporting-Customer-Sink-incr",
+	"config": {
+		"connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
+		"table.name.format": "CustomerSink",
+		"fields.whitelist": "CustomerId,Tenant,FirstName,LastName,Email,Phone",
+		"connection.password": "${azurekv:aks-ana-efx-nonprodkv:kafkaconnect-jdbc-password}",
+		"tasks.max": "1",
+		"topics": "med.reporting.customer",
+		"connection.user": "${azurekv:aks-ana-efx-nonprodkv:kafkaconnect-jdbc-user}",
+		"name": "MED-Reporting-Customer-Sink-incr",
+		"connection.url": "jdbc:sqlserver://EFX-QA-SQLRP01:1433;databaseName=ManagerTrackingDM",
+		"insert.mode": "upsert",
+		"pk.mode": "record_value",
+		"pk.fields": "CustomerId,Tenant"
+		}
+	}
+	```
 
 9.	Test POC:
 
     a.	INSERT few dummy rows in [ManagerTrackingDM].[dbo].[Customer] and [ReportSubscription].[dbo].[Customer] and verify sink connector should get new records in [ManagerTrackingDM].[dbo].[CustomerSink]
 
-    ```
-    INSERT INTO ManagerTrackingDM.dbo.Customer (Tenant, FirstName, LastName, Email, Phone) 
-    VALUES ('T1', 'Prince', 'A', 'Prince.A@email.com', '123-456-7890');
+	```
+    	INSERT INTO ManagerTrackingDM.dbo.Customer (Tenant, FirstName, LastName, Email, Phone) 
+    	VALUES ('T1', 'Prince', 'A', 'Prince.A@email.com', '123-456-7890');
     
 
-    INSERT INTO ReportSubscription.dbo.Customer (Tenant, FirstName, LastName, Email, Phone) 
-    VALUES ('T2', 'Joy', 'Toy', 'Joy.Toy@email.com', '900-123-4544');
-    ```
+    	INSERT INTO ReportSubscription.dbo.Customer (Tenant, FirstName, LastName, Email, Phone) 
+    	VALUES ('T2', 'Joy', 'Toy', 'Joy.Toy@email.com', '900-123-4544');
+	```
 
     b.	Update a record in [ManagerTrackingDM].[dbo].[Customer] and [ReportSubscription].[dbo].[Customer] and verify sink connector should update existing records in [ManagerTrackingDM].[dbo].[CustomerSink]
 
-    ```
-    UPDATE ManagerTrackingDM.dbo.Customer SET FirstName='Joe' WHERE CustomerId=1        
-    UPDATE ReportSubscription.dbo.Customer SET FirstName='Jan' WHERE CustomerId=1
-    ```
+	```
+    	UPDATE ManagerTrackingDM.dbo.Customer SET FirstName='Joe' WHERE CustomerId=1        
+    	UPDATE ReportSubscription.dbo.Customer SET FirstName='Jan' WHERE CustomerId=1
+	```
 
 10.	Verify if topic offsets are increasing after each insert or update as per previous step.
 
