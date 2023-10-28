@@ -1,4 +1,5 @@
 **Update of "CreatedDate" and "UpdatedDate" columns in SQL Server**
+
 There are multiple ways by which we can update timestamp columns in a table.
 DBAs never suggest use of triggers. We will understand how we can replace triggers with non-versioned temporal tables.
 
